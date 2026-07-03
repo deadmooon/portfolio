@@ -37,8 +37,28 @@ export default function Desktop({ terminalIconClicking, onTerminalOpen, onIconCl
   const [latency, setLatency] = useState(31)
   const [log, setLog]         = useState<string[]>([])
   const [visible, setVisible] = useState(false)
+  const [ghActivity, setGhActivity] = useState<{ repo: string; ago: string }[]>([
+    { repo: 'portfolio',    ago: 'now' },
+    { repo: 'careershipai', ago: '2d'  },
+  ])
 
   useEffect(() => { const t = setTimeout(() => setVisible(true), 50); return () => clearTimeout(t) }, [])
+
+  useEffect(() => {
+    fetch('https://api.github.com/users/deadmooon/events/public?per_page=10')
+      .then(r => r.json())
+      .then((events: { type: string; repo: { name: string }; created_at: string }[]) => {
+        const pushes = events.filter(e => e.type === 'PushEvent').slice(0, 3)
+        if (!pushes.length) return
+        setGhActivity(pushes.map(e => {
+          const repo = e.repo.name.replace('deadmooon/', '')
+          const mins = Math.floor((Date.now() - new Date(e.created_at).getTime()) / 60000)
+          const ago  = mins < 60 ? `${mins}m` : mins < 1440 ? `${Math.floor(mins/60)}h` : `${Math.floor(mins/1440)}d`
+          return { repo, ago }
+        }))
+      })
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     const iv = setInterval(() => setTime(new Date()), 1000)
@@ -203,17 +223,14 @@ export default function Desktop({ terminalIconClicking, onTerminalOpen, onIconCl
           <div className="widget-card">
             <div className="widget-title">GITHUB</div>
             <div className="widget-sep" />
-            <div style={{ color: 'var(--text-dim)', fontSize: '0.72em', marginBottom: 6 }}>ayberkaydin</div>
-            <div className="widget-stat" style={{ gap: 4 }}>
-              <span style={{ color: 'var(--prompt)', fontSize: '0.8em', flexShrink: 0 }}>◈</span>
-              <span style={{ color: 'var(--text-muted)', fontSize: '0.76em', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>portfolio</span>
-              <span style={{ color: 'var(--text-dim)', fontSize: '0.7em', flexShrink: 0 }}>now</span>
-            </div>
-            <div className="widget-stat" style={{ gap: 4 }}>
-              <span style={{ color: 'var(--prompt)', fontSize: '0.8em', flexShrink: 0 }}>◈</span>
-              <span style={{ color: 'var(--text-muted)', fontSize: '0.76em', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>careershipai</span>
-              <span style={{ color: 'var(--text-dim)', fontSize: '0.7em', flexShrink: 0 }}>2d</span>
-            </div>
+            <div style={{ color: 'var(--text-dim)', fontSize: '0.72em', marginBottom: 6 }}>deadmooon</div>
+            {ghActivity.map((a, i) => (
+              <div key={i} className="widget-stat" style={{ gap: 4 }}>
+                <span style={{ color: 'var(--prompt)', fontSize: '0.8em', flexShrink: 0 }}>◈</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.76em', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.repo}</span>
+                <span style={{ color: 'var(--text-dim)', fontSize: '0.7em', flexShrink: 0 }}>{a.ago}</span>
+              </div>
+            ))}
           </div>
 
           {/* VISITOR LOG */}

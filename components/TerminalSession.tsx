@@ -24,6 +24,37 @@ const Green = ({ children }: { children: React.ReactNode }) => (
   <span style={{ color: 'var(--prompt)' }}>{children}</span>
 )
 
+// ─── Tab completion data ───────────────────────────────────────
+
+const ALL_COMMANDS = [
+  'ask','cat','cd','clear','cowsay','curl','date','echo','exit','fortune',
+  'hack','help','history','ls','logout','make','man','nano','neofetch',
+  'open','ping','poweroff','pwd','reboot','shutdown','sl','ssh','sudo',
+  'su','tree','uptime','vim','whoami','emacs',
+]
+
+const CAT_COMPLETIONS = [
+  'about.txt','skills.txt','certs.txt','contact.txt',
+  'experience/README.md','experience/bilisim.txt','experience/estu-it.txt',
+  'projects/careershipai/README.md','projects/bug-bounty/README.md',
+  'downloads/README.txt',
+  'writeups/google-maps-api-key.md','writeups/s3-bucket-listing.md',
+]
+
+const LS_COMPLETIONS  = ['experience/','projects/','downloads/','logs/','writeups/']
+const OPEN_COMPLETIONS = ['github','linkedin','careershipai','hackerone','cv']
+
+const FORTUNES = [
+  'Every system has a bug. Your job is to find it first.',
+  'Security is a process, not a product. — Bruce Schneier',
+  'The quieter you become, the more you can hear.',
+  'Hack the planet. But ethically.',
+  'In code we trust. In production we pray.',
+  'There are only two hard things in CS: cache invalidation and naming things.',
+  'The best time to patch was yesterday. The second best time is now.',
+  'nmap -sV --script vuln ayberkayd.in → no open ports. try again.',
+]
+
 // ─── Command handler ───────────────────────────────────────────
 
 interface RunCtx {
@@ -102,6 +133,16 @@ function runCommand(raw: string, onGlitch: () => void, ctx: RunCtx = {}): React.
 
     case 'cat': {
       if (!arg) return <Muted>Usage: cat &lt;path&gt;</Muted>
+
+      if (arg === '/etc/passwd')
+        return (
+          <pre style={{ color: 'var(--text-muted)', fontSize: '0.85em' }}>{`root:x:0:0:root:/root:/bin/bash
+ayberk:x:1000:1000:Ayberk Aydin:/home/ayberk:/bin/zsh
+guest:x:1001:1001:Guest:/home/guest:/bin/ayberksh`}</pre>
+        )
+
+      if (arg.startsWith('/etc/') || arg.startsWith('/proc/') || arg.startsWith('/sys/') || arg.startsWith('/root/') || arg.startsWith('/var/'))
+        return <div style={{ color: 'var(--error)' }}>cat: {arg}: Permission denied</div>
 
       if (/^\.(env|config|git|ssh)|^logs\//.test(arg))
         return <div style={{ color: 'var(--error)' }}>cat: {arg}: Permission denied</div>
@@ -276,11 +317,92 @@ function runCommand(raw: string, onGlitch: () => void, ctx: RunCtx = {}): React.
       return <Muted>(filesystem is read-only in this shell)</Muted>
 
     case 'open': {
-      const url = args[0]
-      if (!url) return <div style={{ color: 'var(--error)' }}>open: missing argument</div>
-      const full = url.startsWith('http') ? url : `https://${url}`
+      const ALIASES: Record<string, string> = {
+        github:       'github.com/deadmooon',
+        linkedin:     'linkedin.com/in/ayberk-aydin',
+        careershipai: 'careershipai.com',
+        hackerone:    'hackerone.com/deadmooon',
+        cv:           'ayberkayd.in/cv',
+      }
+      const target = ALIASES[arg] ?? arg
+      if (!target) return (
+        <div className="space-y-0.5">
+          <Muted>Usage: open &lt;url or alias&gt;</Muted>
+          <Muted>Aliases: <Green>{Object.keys(ALIASES).join('  ')}</Green></Muted>
+        </div>
+      )
+      const full = target.startsWith('http') ? target : `https://${target}`
       window.open(full, '_blank', 'noreferrer')
-      return <Muted>opening {url}...</Muted>
+      return <Muted>opening <Green>{target}</Green>…</Muted>
+    }
+
+    case 'ssh': {
+      if (!arg || arg.includes('ayberk') || arg.includes('ayberkayd.in')) {
+        return (
+          <div className="space-y-0.5">
+            <Muted>ssh: already connected as <Green>guest@ayberk</Green></Muted>
+            <Muted>no need to tunnel — you&apos;re already in.</Muted>
+          </div>
+        )
+      }
+      return <div style={{ color: 'var(--error)' }}>ssh: connect to host {arg} port 22: Connection refused</div>
+    }
+
+    case 'curl': {
+      if (!arg || arg.includes('ayberkayd.in') || arg === 'localhost') {
+        return (
+          <pre style={{ color: 'var(--text-muted)', fontSize: '0.82em', lineHeight: 1.5 }}>{`
+  ╔══════════════════════════════════════╗
+  ║  AYBERK_OS v2026.07.04              ║
+  ║  > _                                ║
+  ║                                     ║
+  ║  Ayberk Aydın                       ║
+  ║  Computer Engineer                  ║
+  ║  Security Researcher · Builder      ║
+  ║                                     ║
+  ║  ayberkayd.in          [200 OK]     ║
+  ╚══════════════════════════════════════╝`}</pre>
+        )
+      }
+      return (
+        <div className="space-y-0.5">
+          <Muted>curl: connecting to <Green>{arg}</Green>…</Muted>
+          <Muted>HTTP/2 200  time: {18 + Math.floor(Math.random() * 40)}ms</Muted>
+        </div>
+      )
+    }
+
+    case 'sl':
+      return (
+        <pre style={{ color: 'var(--text-muted)', fontSize: '0.78em', lineHeight: 1.4 }}>{`
+      ====        ________                _________
+  _D _|  |_______/        \\__I_I_____===__|_______|
+   |(_)---  |   H\\________/ |   |        =|___ ___|
+   /     |  |   H  |  |     |   |         ||_| |_||
+  |      |  |   H  |__--------------------| [___] |
+  |_______|___H__/__|_____/[][]~\\_________|       |
+  /    |   |-----------I_____I []   []   D|=======|
+ /  =| o |=-O=====O=====O=====O\\ ____Y__|_|_______|
+/   -|___|=  ||    ||    ||    |___/~\\___/
+                                         choo choo 🚂`}</pre>
+      )
+
+    case 'fortune':
+      return <Muted style={{ fontStyle: 'italic' }}>{FORTUNES[Math.floor(Math.random() * FORTUNES.length)]}</Muted>
+
+    case 'cowsay': {
+      const text = rawArg || 'moo'
+      const bar = '_'.repeat(text.length + 2)
+      return (
+        <pre style={{ color: 'var(--text-muted)', fontSize: '0.88em', lineHeight: 1.5 }}>{` ${bar}
+< ${text} >
+ ${'-'.repeat(text.length + 2)}
+        \\   ^__^
+         \\  (oo)\\_______
+            (__)\\       )\\/\\
+                ||----w |
+                ||     ||`}</pre>
+      )
     }
 
     case 'sudo': {
@@ -773,6 +895,31 @@ export default function TerminalSession({ onGlitch, externalCmd, onExternalCmdCo
   }, [input, history, onGlitch, runSequence])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Tab') {
+      e.preventDefault()
+      if (!input.trim()) return
+      const parts = input.trimStart().split(' ')
+      let completions: string[] = []
+      if (parts.length === 1) {
+        completions = ALL_COMMANDS.filter(c => c.startsWith(parts[0]) && c !== parts[0])
+      } else {
+        const cmd = parts[0]; const partial = parts.slice(1).join(' ')
+        if (cmd === 'cat')  completions = CAT_COMPLETIONS.filter(p => p.startsWith(partial) && p !== partial)
+        if (cmd === 'ls')   completions = LS_COMPLETIONS.filter(p => p.startsWith(partial) && p !== partial)
+        if (cmd === 'man')  completions = ALL_COMMANDS.filter(c => c.startsWith(partial) && c !== partial)
+        if (cmd === 'open') completions = OPEN_COMPLETIONS.filter(c => c.startsWith(partial) && c !== partial)
+      }
+      if (completions.length === 1) {
+        const base = input.trimStart().split(' ')[0]
+        setInput(parts.length === 1 ? completions[0] : `${base} ${completions[0]}`)
+      } else if (completions.length > 1) {
+        setOutputs(prev => [...prev, {
+          id: `tab-${Date.now()}`,
+          content: <div style={{ color: 'var(--text-muted)', paddingTop: '0.5rem' }}>{completions.join('  ')}</div>,
+        }])
+      }
+      return
+    }
     if (e.key === 'Enter') { submit(); return }
     if (e.key === 'ArrowUp') {
       e.preventDefault()
