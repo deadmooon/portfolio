@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { profile, experience, projects, skills, certifications, writeups, lsOutput, lsOutputAll, helpText } from '@/lib/content'
+import { profile, experience, projects, skills, certifications, lsOutput, lsOutputAll, helpText } from '@/lib/content'
 // ponytail: certifications used in cat certs.txt command output below
 
 const HANDLE = 'guest@ayberk:~$'
@@ -124,8 +124,6 @@ function runCommand(raw: string, onGlitch: () => void, ctx: RunCtx = {}): React.
         return <Muted>ayberk_cv.pdf   README.txt</Muted>
       if (pathArg === 'logs/' || pathArg === 'logs')
         return <Muted>access.log   session.log</Muted>
-      if (pathArg === 'writeups/' || pathArg === 'writeups')
-        return <Muted>{writeups.map(w => w.id + '.md').join('   ')}</Muted>
       if (pathArg.startsWith('.'))
         return <div style={{ color: 'var(--error)' }}>ls: {pathArg}: Permission denied</div>
       return <div style={{ color: 'var(--error)' }}>ls: {pathArg}: No such file or directory</div>
@@ -147,29 +145,8 @@ guest:x:1001:1001:Guest:/home/guest:/bin/ayberksh`}</pre>
       if (/^\.(env|config|git|ssh)|^logs\//.test(arg))
         return <div style={{ color: 'var(--error)' }}>cat: {arg}: Permission denied</div>
 
-      if (arg.startsWith('writeups/')) {
-        const id = arg.replace('writeups/', '').replace('.md', '')
-        const w = writeups.find(x => x.id === id)
-        if (!w) return <div style={{ color: 'var(--error)' }}>cat: {arg}: No such file or directory</div>
-        const severityColor = w.severity === 'HIGH' ? 'var(--error)' : w.severity === 'MEDIUM' ? '#f5a623' : 'var(--text-muted)'
-        return (
-          <div className="space-y-1">
-            <Sep />
-            <div className="pl-2 py-1 space-y-1.5">
-              <div className="flex items-center gap-3 flex-wrap">
-                <span style={{ fontWeight: 700 }}>{w.title}</span>
-                <span style={{ color: severityColor, fontSize: '0.8em', border: `1px solid ${severityColor}`, padding: '1px 6px', borderRadius: 3 }}>{w.severity}</span>
-                <span style={{ color: 'var(--success)', fontSize: '0.8em' }}>✓ {w.status}</span>
-              </div>
-              <div><Dim>program  </Dim><Muted>{w.program}</Muted></div>
-              <div><Dim>tags     </Dim><Muted>{w.tags.join(' · ')}</Muted></div>
-              <div className="pt-1"><Muted>{w.summary}</Muted></div>
-              <div><Dim>impact   </Dim><Muted>{w.impact}</Muted></div>
-            </div>
-            <Sep />
-          </div>
-        )
-      }
+      if (arg.startsWith('writeups/'))
+        return <div style={{ color: 'var(--error)' }}>cat: {arg}: Permission denied</div>
 
       if (arg === 'downloads/ayberk_cv.pdf')
         return (
@@ -605,12 +582,9 @@ guest:x:1001:1001:Guest:/home/guest:/bin/ayberksh`}</pre>
 │       └── [CLASSIFIED]
 ├── downloads/
 │   └── ayberk_cv.pdf
-├── logs/
-│   ├── access.log [protected]
-│   └── session.log [protected]
-└── writeups/
-    ├── google-maps-api-key.md
-    └── s3-bucket-listing.md`}</pre>
+└── logs/
+    ├── access.log [protected]
+    └── session.log [protected]`}</pre>
       )
 
     case 'history': {

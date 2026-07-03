@@ -1,6 +1,6 @@
 'use client'
 
-import { profile, experience, projects, skills, writeups } from '@/lib/content'
+import { profile, experience, projects, skills } from '@/lib/content'
 
 const G = ({ children }: { children: React.ReactNode }) => (
   <span style={{ color: 'var(--prompt)' }}>{children}</span>
@@ -109,25 +109,6 @@ export default function MobileView() {
             <div style={{ marginTop: '0.25rem' }}><M>{p.bullets[0]}</M></div>
           </div>
         ))}
-      </div>
-
-      <Sep />
-
-      {/* writeups */}
-      <Prompt cmd="ls writeups/" />
-      <div style={{ paddingLeft: '0.5rem', marginBottom: '1.25rem' }}>
-        {writeups.map(w => {
-          const c = w.severity === 'HIGH' ? 'var(--error)' : '#f5a623'
-          return (
-            <div key={w.id} style={{ marginBottom: '0.75rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                <span style={{ fontWeight: 600 }}>{w.title}</span>
-                <span style={{ color: c, border: `1px solid ${c}`, padding: '0px 5px', borderRadius: 3, fontSize: '0.75em' }}>{w.severity}</span>
-              </div>
-              <M>{w.summary.slice(0, 100)}…</M>
-            </div>
-          )
-        })}
       </div>
 
       <Sep />

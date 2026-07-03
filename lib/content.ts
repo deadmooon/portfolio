@@ -77,31 +77,8 @@ export const certifications = [
   { name: 'Siber Vatan CTF', detail: '2nd place in Eskişehir — web vulns, crypto, network analysis' },
 ]
 
-export const writeups = [
-  {
-    id: 'google-maps-api-key',
-    title: 'Exposed Google Maps API Key',
-    severity: 'MEDIUM',
-    program: 'Private Program (HackerOne)',
-    status: 'Resolved',
-    summary: 'Discovered a Google Maps API key hardcoded in client-side JavaScript with no domain restriction. Key was active and usable by third parties, exposing the organization to unexpected billing.',
-    impact: 'Unauthorized API usage, potential billing abuse, quota exhaustion.',
-    tags: ['recon', 'api-key', 'javascript'],
-  },
-  {
-    id: 's3-bucket-listing',
-    title: 'Public S3 Bucket Directory Listing',
-    severity: 'HIGH',
-    program: 'Private Program (HackerOne)',
-    status: 'Resolved',
-    summary: 'Found a misconfigured S3 bucket with public listing enabled, exposing internal filenames, backup archives, and configuration files. No authentication required to enumerate contents.',
-    impact: 'Information disclosure, potential access to sensitive internal files.',
-    tags: ['recon', 'misconfiguration', 'aws', 's3'],
-  },
-]
-
-export const lsOutput    = `about.txt       experience/     projects/       skills.txt      certs.txt       contact.txt     downloads/      logs/        writeups/`
-export const lsOutputAll = `.               ..              .config/\n${`about.txt       experience/     projects/       skills.txt      certs.txt       contact.txt     downloads/      logs/        writeups/`}`
+export const lsOutput    = `about.txt       experience/     projects/       skills.txt      certs.txt       contact.txt     downloads/      logs/`
+export const lsOutputAll = `.               ..              .config/\n${`about.txt       experience/     projects/       skills.txt      certs.txt       contact.txt     downloads/      logs/`}`
 
 export const helpText = `
 Available Commands
