@@ -77,8 +77,8 @@ export const certifications = [
   { name: 'Siber Vatan CTF', detail: '2nd place in Eskişehir — web vulns, crypto, network analysis' },
 ]
 
-export const lsOutput    = `about.txt       experience/     projects/       skills.txt      certs.txt       contact.txt     downloads/      logs/`
-export const lsOutputAll = `.               ..              .config/\n${`about.txt       experience/     projects/       skills.txt      certs.txt       contact.txt     downloads/      logs/`}`
+export const lsOutput    = `about.txt       experience/     projects/       skills.txt      certs.txt       contact.txt     downloads/      logs/        writeups/`
+export const lsOutputAll = `.               ..              .config/\n${`about.txt       experience/     projects/       skills.txt      certs.txt       contact.txt     downloads/      logs/        writeups/`}`
 
 export const helpText = `
 Available Commands

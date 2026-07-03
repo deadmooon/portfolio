@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 
 const BiosScreen     = dynamic(() => import('@/components/BiosScreen'),     { ssr: false })
+const LoginScreen    = dynamic(() => import('@/components/LoginScreen'),    { ssr: false })
 const Desktop        = dynamic(() => import('@/components/Desktop'),        { ssr: false })
 const TerminalWindow = dynamic(() => import('@/components/TerminalWindow'), { ssr: false })
 const MobileView     = dynamic(() => import('@/components/MobileView'),     { ssr: false })
@@ -14,7 +15,7 @@ function genSessionId() {
 }
 
 export default function Home() {
-  const [phase, setPhase]               = useState<'bios' | 'desktop'>('bios')
+  const [phase, setPhase]               = useState<'bios' | 'login' | 'desktop'>('bios')
   const [iconClicking, setIconClicking] = useState(false)
   const [terminalOpen, setTerminalOpen] = useState(false)
   const [glitching, setGlitching]       = useState(false)
@@ -42,7 +43,7 @@ export default function Home() {
   }, [])
 
   const handleBiosComplete = useCallback(() => {
-    setPhase('desktop')
+    setPhase('login')
     setTimeout(() => setIconClicking(true),  1400)
     setTimeout(() => setIconClicking(false), 1900)
     setTimeout(() => setTerminalOpen(true),  1950)
@@ -80,6 +81,15 @@ export default function Home() {
 
         {phase === 'bios' && (
           <BiosScreen onComplete={handleBiosComplete} />
+        )}
+
+        {phase === 'login' && (
+          <LoginScreen onComplete={() => {
+            setPhase('desktop')
+            setTimeout(() => setIconClicking(true),  400)
+            setTimeout(() => setIconClicking(false), 900)
+            setTimeout(() => setTerminalOpen(true),  950)
+          }} />
         )}
 
         {phase === 'desktop' && (

@@ -124,6 +124,8 @@ function runCommand(raw: string, onGlitch: () => void, ctx: RunCtx = {}): React.
         return <Muted>ayberk_cv.pdf   README.txt</Muted>
       if (pathArg === 'logs/' || pathArg === 'logs')
         return <Muted>access.log   session.log</Muted>
+      if (pathArg === 'writeups/' || pathArg === 'writeups')
+        return <div style={{ color: 'var(--error)' }}>ls: writeups/: Permission denied</div>
       if (pathArg.startsWith('.'))
         return <div style={{ color: 'var(--error)' }}>ls: {pathArg}: Permission denied</div>
       return <div style={{ color: 'var(--error)' }}>ls: {pathArg}: No such file or directory</div>
