@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic'
 const BiosScreen     = dynamic(() => import('@/components/BiosScreen'),     { ssr: false })
 const Desktop        = dynamic(() => import('@/components/Desktop'),        { ssr: false })
 const TerminalWindow = dynamic(() => import('@/components/TerminalWindow'), { ssr: false })
+const MobileView     = dynamic(() => import('@/components/MobileView'),     { ssr: false })
 
 function genSessionId() {
   const seg = () => Math.random().toString(16).slice(2, 6).toUpperCase()
@@ -66,25 +67,33 @@ export default function Home() {
   }, [terminalOpen, handleTerminalOpen])
 
   return (
-    <div className={`scanlines vignette${glitching ? ' screen-glitch' : ''}${crtOff ? ' crt-poweroff' : ''}`}>
-      <div className="glitch-overlay-r" aria-hidden="true" />
-      <div className="glitch-overlay-c" aria-hidden="true" />
+    <>
+      {/* Mobile */}
+      <div className="block md:hidden">
+        <MobileView />
+      </div>
 
-      {phase === 'bios' && (
-        <BiosScreen onComplete={handleBiosComplete} />
-      )}
+      {/* Desktop */}
+      <div className={`hidden md:block scanlines vignette${glitching ? ' screen-glitch' : ''}${crtOff ? ' crt-poweroff' : ''}`}>
+        <div className="glitch-overlay-r" aria-hidden="true" />
+        <div className="glitch-overlay-c" aria-hidden="true" />
 
-      {phase === 'desktop' && (
-        <Desktop terminalIconClicking={iconClicking} onTerminalOpen={handleTerminalOpen} onIconClick={handleIconClick}>
-          <TerminalWindow
-            onGlitch={handleGlitch}
-            isOpen={terminalOpen}
-            sessionId={sessionId}
-            externalCmd={iconCmd}
-            onExternalCmdConsumed={() => setIconCmd(null)}
-          />
-        </Desktop>
-      )}
-    </div>
+        {phase === 'bios' && (
+          <BiosScreen onComplete={handleBiosComplete} />
+        )}
+
+        {phase === 'desktop' && (
+          <Desktop terminalIconClicking={iconClicking} onTerminalOpen={handleTerminalOpen} onIconClick={handleIconClick}>
+            <TerminalWindow
+              onGlitch={handleGlitch}
+              isOpen={terminalOpen}
+              sessionId={sessionId}
+              externalCmd={iconCmd}
+              onExternalCmdConsumed={() => setIconCmd(null)}
+            />
+          </Desktop>
+        )}
+      </div>
+    </>
   )
 }
