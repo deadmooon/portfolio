@@ -825,7 +825,7 @@ export default function TerminalSession({ onGlitch, externalCmd, onExternalCmdCo
 
     next(0)
     return () => { cancelled = true }
-  }, [onGlitch])
+  }, [onGlitch, lang])
 
   useEffect(() => { onScroll?.() }, [outputs, seqTyping, onScroll])
 
@@ -870,7 +870,7 @@ export default function TerminalSession({ onGlitch, externalCmd, onExternalCmdCo
 
     if (raw.toLowerCase() === 'whoami') {
       // show whoami line + brief header, then auto-run sequence
-      const header = runCommand('whoami', onGlitch, { history, sessionStart: sessionStartRef.current, lang })
+      const header = runCommand('whoami', onGlitch, { history, sessionStart: sessionStartRef.current, lang: lang })
       setOutputs(prev => [
         ...prev,
         {
