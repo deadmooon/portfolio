@@ -47,6 +47,10 @@ export default function BootSequence({ onGlitch, onComplete, onScroll }: Props) 
   const [typewriterText, setTypewriterText] = useState('')
   const [typewriterDone, setTypewriterDone] = useState(false)
   const glitchFired = useRef(false)
+  const onGlitchRef   = useRef(onGlitch)
+  const onCompleteRef = useRef(onComplete)
+  useEffect(() => { onGlitchRef.current   = onGlitch   }, [onGlitch])
+  useEffect(() => { onCompleteRef.current = onComplete }, [onComplete])
 
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = []
@@ -67,7 +71,7 @@ export default function BootSequence({ onGlitch, onComplete, onScroll }: Props) 
               setTimeout(() => {
                 if (!glitchFired.current) {
                   glitchFired.current = true
-                  onGlitch()
+                  onGlitchRef.current()
                 }
                 setTypewriterDone(true)
               }, 500)
@@ -78,7 +82,7 @@ export default function BootSequence({ onGlitch, onComplete, onScroll }: Props) 
         timers.push(setTimeout(() => {
           setVisibleLines(v => [...v, i])
           if (i === LINES.length - 1) {
-            setTimeout(() => onComplete(), 500)
+            setTimeout(() => onCompleteRef.current(), 500)
           }
         }, line.delay))
       }
@@ -88,7 +92,7 @@ export default function BootSequence({ onGlitch, onComplete, onScroll }: Props) 
       timers.forEach(clearTimeout)
       if (twInterval) clearInterval(twInterval)
     }
-  }, [onGlitch, onComplete])
+  }, [])
 
   useEffect(() => { onScroll?.() }, [visibleLines, typewriterText, onScroll])
 
