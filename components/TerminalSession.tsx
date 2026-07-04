@@ -38,7 +38,6 @@ const CAT_COMPLETIONS = [
   'experience/README.md','experience/bilisim.txt','experience/estu-it.txt',
   'projects/careershipai/README.md','projects/bug-bounty/README.md',
   'downloads/README.txt',
-  'writeups/google-maps-api-key.md','writeups/s3-bucket-listing.md',
 ]
 
 const LS_COMPLETIONS  = ['experience/','projects/','downloads/','logs/','writeups/']
@@ -513,23 +512,23 @@ guest:x:1001:1001:Guest:/home/guest:/bin/ayberksh`}</pre>
       if (/project|built|made|created|ship/.test(q)) {
         return (
           <div className="space-y-2 pl-2">
-            <Green>Projects</Green>
-            {projects.map(p => (
-              <div key={p.id} className="space-y-0.5">
-                <div style={{ fontWeight: 600 }}>{p.name} <Dim>— {p.tagline}</Dim></div>
-                <Muted>{p.bullets[0]}</Muted>
-                {p.url && <div><Green>↗ {p.url}</Green></div>}
+            <Green>{tr ? 'Projeler' : 'Projects'}</Green>
+            {prs.map(pr => (
+              <div key={pr.id} className="space-y-0.5">
+                <div style={{ fontWeight: 600 }}>{pr.name} <Dim>— {pr.tagline}</Dim></div>
+                <Muted>{pr.bullets[0]}</Muted>
+                {pr.url && <div><Green>↗ {pr.url}</Green></div>}
               </div>
             ))}
           </div>
         )
       }
 
-      if (/experience|work|job|intern|compan|employ/.test(q)) {
+      if (/experience|work|job|intern|compan|employ|deneyim|staj|çalış/.test(q)) {
         return (
           <div className="space-y-2 pl-2">
-            <Green>Experience</Green>
-            {experience.map(e => (
+            <Green>{tr ? 'Deneyim' : 'Experience'}</Green>
+            {exp.map(e => (
               <div key={e.id} className="space-y-0.5">
                 <div style={{ fontWeight: 600 }}>{e.company}</div>
                 <Muted>{e.role} · {e.period}</Muted>
@@ -539,13 +538,13 @@ guest:x:1001:1001:Guest:/home/guest:/bin/ayberksh`}</pre>
         )
       }
 
-      if (/skill|tech|stack|language|tool|use/.test(q)) {
+      if (/skill|tech|stack|language|tool|use|yetenek|teknoloji/.test(q)) {
         return (
           <div className="pl-2 space-y-1">
-            <Green>Skills</Green>
-            {Object.entries(skills).map(([k, v]) => (
+            <Green>{tr ? 'Yetenekler' : 'Skills'}</Green>
+            {Object.entries(sk).map(([k, v]) => (
               <div key={k} className="flex gap-4 flex-wrap">
-                <span className="w-20 shrink-0 uppercase text-xs"><Dim>{k}</Dim></span>
+                <span className="w-24 shrink-0 uppercase text-xs"><Dim>{k}</Dim></span>
                 <Muted>{v.join(' · ')}</Muted>
               </div>
             ))}
@@ -553,31 +552,34 @@ guest:x:1001:1001:Guest:/home/guest:/bin/ayberksh`}</pre>
         )
       }
 
-      if (/contact|email|reach|hire|linkedin/.test(q)) {
+      if (/contact|email|reach|hire|linkedin|iletişim/.test(q)) {
         return (
           <div className="pl-2 space-y-0.5">
-            <Green>Contact</Green>
-            <div><Dim>email     </Dim><a href={`mailto:${profile.email}`} className="hover:underline"><Green>{profile.email}</Green></a></div>
-            <div><Dim>linkedin  </Dim><a href={`https://${profile.linkedin}`} target="_blank" rel="noreferrer" className="hover:underline"><Green>{profile.linkedin}</Green></a></div>
+            <Green>{tr ? 'İletişim' : 'Contact'}</Green>
+            <div><Dim>email     </Dim><a href={`mailto:${p.email}`} className="hover:underline"><Green>{p.email}</Green></a></div>
+            <div><Dim>linkedin  </Dim><a href={`https://${p.linkedin}`} target="_blank" rel="noreferrer" className="hover:underline"><Green>{p.linkedin}</Green></a></div>
           </div>
         )
       }
 
-      if (/who|about|yourself|you are|identity/.test(q)) {
+      if (/who|about|yourself|you are|identity|kimsin|hakkında/.test(q)) {
         return (
           <div className="pl-2 space-y-1">
-            <div style={{ fontWeight: 600 }}>{profile.name}</div>
-            <Muted>{profile.role}</Muted>
-            <Muted>{profile.university} · Class of 2026</Muted>
-            <div className="pt-1"><Muted>Type <Green>whoami</Green> for a guided CV walkthrough.</Muted></div>
+            <div style={{ fontWeight: 600 }}>{p.name}</div>
+            <Muted>{p.role}</Muted>
+            <Muted>{p.university} · {tr ? 'Mezuniyet 2026' : 'Class of 2026'}</Muted>
+            <div className="pt-1"><Muted>{tr ? 'Rehberli CV turu için ' : 'Type '}<Green>whoami</Green>{tr ? ' yaz.' : ' for a guided CV walkthrough.'}</Muted></div>
           </div>
         )
       }
 
       return (
         <div className="pl-2 space-y-1">
-          <Muted>Hmm, not sure what you mean. Try:</Muted>
-          <Muted><Green>ask about projects</Green> · <Green>ask skills</Green> · <Green>ask experience</Green> · <Green>ask contact</Green></Muted>
+          <Muted>{tr ? 'Ne demek istediğinden emin değilim. Dene:' : 'Hmm, not sure what you mean. Try:'}</Muted>
+          <Muted>{tr
+            ? <><Green>ask projeler</Green> · <Green>ask yetenekler</Green> · <Green>ask deneyim</Green> · <Green>ask iletişim</Green></>
+            : <><Green>ask about projects</Green> · <Green>ask skills</Green> · <Green>ask experience</Green> · <Green>ask contact</Green></>
+          }</Muted>
         </div>
       )
     }
@@ -776,8 +778,7 @@ export default function TerminalSession({ onGlitch, externalCmd, onExternalCmdCo
       },
     ])
     onExternalCmdConsumed?.()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [externalCmd, onGlitch, onExternalCmdConsumed])
+  }, [externalCmd, lang, onGlitch, onExternalCmdConsumed])
 
   const runSequence = useCallback((cmds: string[], afterId: string) => {
     setSequencing(true)

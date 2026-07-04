@@ -44,9 +44,13 @@ export default function Home() {
 
   const handleBiosComplete = useCallback(() => {
     setPhase('login')
-    setTimeout(() => setIconClicking(true),  1400)
-    setTimeout(() => setIconClicking(false), 1900)
-    setTimeout(() => setTerminalOpen(true),  1950)
+  }, [])
+
+  const handleLoginComplete = useCallback(() => {
+    setPhase('desktop')
+    setTimeout(() => setIconClicking(true),  400)
+    setTimeout(() => setIconClicking(false), 900)
+    setTimeout(() => setTerminalOpen(true),  950)
   }, [])
 
   const handleTerminalOpen = useCallback(() => {
@@ -84,12 +88,7 @@ export default function Home() {
         )}
 
         {phase === 'login' && (
-          <LoginScreen onComplete={() => {
-            setPhase('desktop')
-            setTimeout(() => setIconClicking(true),  400)
-            setTimeout(() => setIconClicking(false), 900)
-            setTimeout(() => setTerminalOpen(true),  950)
-          }} />
+          <LoginScreen onComplete={handleLoginComplete} />
         )}
 
         {phase === 'desktop' && (

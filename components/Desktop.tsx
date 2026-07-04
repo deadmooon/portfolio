@@ -47,8 +47,9 @@ export default function Desktop({ terminalIconClicking, onTerminalOpen, onIconCl
   useEffect(() => {
     fetch('https://api.github.com/users/deadmooon/events/public?per_page=10')
       .then(r => r.json())
-      .then((events: { type: string; repo: { name: string }; created_at: string }[]) => {
-        const pushes = events.filter(e => e.type === 'PushEvent').slice(0, 3)
+      .then((events: unknown) => {
+        if (!Array.isArray(events)) return
+        const pushes = (events as { type: string; repo: { name: string }; created_at: string }[]).filter(e => e.type === 'PushEvent').slice(0, 3)
         if (!pushes.length) return
         setGhActivity(pushes.map(e => {
           const repo = e.repo.name.replace('deadmooon/', '')
