@@ -679,13 +679,13 @@ guest:x:1001:1001:Guest:/home/guest:/bin/ayberksh`}</pre>
       const mm = Math.floor((elapsed % 3600) / 60)
       const ss = elapsed % 60
       const info: [string, React.ReactNode][] = [
-        ['OS',      <><Green key="os">AYBERK_OS</Green> v2026.07.04</>],
-        ['Host',    'ayberkayd.in'],
-        ['Shell',   'ayberksh 2.0'],
-        ['Kernel',  'next.js 16.2.10'],
-        ['Uptime',  `${pad(hh)}:${pad(mm)}:${pad(ss)}`],
-        ['Tech',    'Next.js · TypeScript · Tailwind'],
-        ['Theme',   'Hack Green / Terminal Black'],
+        [tr ? 'İS'        : 'OS',     <><Green key="os">AYBERK_OS</Green> v2026.07.04</>],
+        [tr ? 'Host'      : 'Host',   'ayberkayd.in'],
+        [tr ? 'Kabuk'     : 'Shell',  'ayberksh 2.0'],
+        [tr ? 'Çekirdek'  : 'Kernel', 'next.js 16.2.10'],
+        [tr ? 'Süre'      : 'Uptime', `${pad(hh)}:${pad(mm)}:${pad(ss)}`],
+        [tr ? 'Teknoloji' : 'Tech',   'Next.js · TypeScript · Tailwind'],
+        [tr ? 'Tema'      : 'Theme',  'Hack Green / Terminal Black'],
       ]
       const logo = `  ┌─────────────────┐
   │  > _            │
@@ -917,6 +917,28 @@ export default function TerminalSession({ onGlitch, externalCmd, onExternalCmdCo
   }, [input, history, lang, onGlitch, runSequence])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.ctrlKey && e.key === 'l') {
+      e.preventDefault()
+      setOutputs([])
+      setInput('')
+      return
+    }
+    if (e.ctrlKey && e.key === 'c') {
+      e.preventDefault()
+      if (input.trim()) {
+        setOutputs(prev => [...prev, {
+          id: `ctrlc-${Date.now()}`,
+          content: (
+            <div className="flex gap-3 mt-4">
+              <span style={{ color: 'var(--prompt)', flexShrink: 0 }}>{HANDLE}</span>
+              <span>{input}<Muted> ^C</Muted></span>
+            </div>
+          ),
+        }])
+      }
+      setInput('')
+      return
+    }
     if (e.key === 'Tab') {
       e.preventDefault()
       if (!input.trim()) return
