@@ -981,7 +981,7 @@ export default function TerminalSession({ onGlitch, externalCmd, onExternalCmdCo
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="flex-1 px-8 py-16 max-w-3xl mx-auto w-full">
+      <div className="flex-1 px-8 pt-16 pb-24 max-w-3xl mx-auto w-full">
         {outputs.length === 0 && !sequencing && (
           <div style={{ color: 'var(--text-dim)' }} className="space-y-1">
             <div>type <span style={{ color: 'var(--text-muted)' }}>help</span> for available commands</div>
