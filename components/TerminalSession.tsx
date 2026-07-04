@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { profile, experience, projects, skills, certifications, lsOutput, lsOutputAll, helpText } from '@/lib/content'
+import { profile, profileTr, experience, experienceTr, projects, projectsTr, skills, skillsTr, certifications, certificationsTr, lsOutput, lsOutputAll, helpText, helpTextTr } from '@/lib/content'
 // ponytail: certifications used in cat certs.txt command output below
 
 const HANDLE = 'guest@ayberk:~$'
@@ -60,7 +60,8 @@ const FORTUNES = [
 interface RunCtx {
   history?: string[]
   sessionStart?: number
-  rawInput?: string   // original casing for echo
+  rawInput?: string
+  lang?: 'en' | 'tr'
 }
 
 const MAN_PAGES: Record<string, { synopsis: string; desc: string }> = {
@@ -88,21 +89,39 @@ function runCommand(raw: string, onGlitch: () => void, ctx: RunCtx = {}): React.
   const cmd   = parts[0].toLowerCase()
   const args  = parts.slice(1).map(a => a.toLowerCase())
   const arg   = args.join(' ')
-  // preserve original casing for echo
   const rawArg = raw.trim().split(/\s+/).slice(1).join(' ')
 
+  const tr  = ctx.lang === 'tr'
+  const p   = tr ? profileTr       : profile
+  const exp = tr ? experienceTr    : experience
+  const prs = tr ? projectsTr      : projects
+  const sk  = tr ? skillsTr        : skills
+  const crt = tr ? certificationsTr: certifications
+
   switch (cmd) {
+    case 'lang': {
+      if (arg === 'tr' || arg === 'en') {
+        return null // handled in component
+      }
+      return (
+        <div className="space-y-0.5">
+          <Muted>Usage: lang tr  <Dim>— Türkçe</Dim></Muted>
+          <Muted>       lang en  <Dim>— English</Dim></Muted>
+        </div>
+      )
+    }
+
     case 'whoami':
       return (
         <div className="space-y-1">
           <Sep />
           <div className="pl-2 space-y-0.5">
-            <div style={{ fontSize: '1.05em', fontWeight: 700 }}>{profile.name}</div>
-            <div><Muted>{profile.role}</Muted></div>
-            <div><Muted>{profile.university} · Class of 2026</Muted></div>
+            <div style={{ fontSize: '1.05em', fontWeight: 700 }}>{p.name}</div>
+            <div><Muted>{p.role}</Muted></div>
+            <div><Muted>{p.university} · {tr ? 'Mezuniyet 2026' : 'Class of 2026'}</Muted></div>
             <div className="flex gap-6 flex-wrap pt-1">
-              <a href={`mailto:${profile.email}`} className="hover:underline"><Green>{profile.email}</Green></a>
-              <a href={`https://${profile.linkedin}`} target="_blank" rel="noreferrer" className="hover:underline"><Green>{profile.linkedin}</Green></a>
+              <a href={`mailto:${p.email}`} className="hover:underline"><Green>{p.email}</Green></a>
+              <a href={`https://${p.linkedin}`} target="_blank" rel="noreferrer" className="hover:underline"><Green>{p.linkedin}</Green></a>
             </div>
           </div>
           <Sep />
@@ -117,9 +136,9 @@ function runCommand(raw: string, onGlitch: () => void, ctx: RunCtx = {}): React.
       if (!pathArg || pathArg === '.' || pathArg === '~')
         return <div style={{ color: 'var(--text-muted)', whiteSpace: 'pre-wrap' }}>{showAll ? lsOutputAll : lsOutput}</div>
       if (pathArg === 'experience/' || pathArg === 'experience')
-        return <Muted>{experience.map(e => e.id + '.txt').join('   ')}</Muted>
+        return <Muted>{exp.map(e => e.id + '.txt').join('   ')}</Muted>
       if (pathArg === 'projects/' || pathArg === 'projects')
-        return <Muted>{projects.map(p => p.id + '/').join('   ')}</Muted>
+        return <Muted>{prs.map(p => p.id + '/').join('   ')}</Muted>
       if (pathArg === 'downloads/' || pathArg === 'downloads')
         return <Muted>ayberk_cv.pdf   README.txt</Muted>
       if (pathArg === 'logs/' || pathArg === 'logs')
@@ -166,9 +185,9 @@ guest:x:1001:1001:Guest:/home/guest:/bin/ayberksh`}</pre>
           <div className="space-y-1">
             <Sep />
             <div className="pl-2 py-1 space-y-0.5">
-              <div style={{ fontWeight: 700 }}>{profile.name}</div>
-              <div><Muted>{profile.role}</Muted></div>
-              <div><Muted>{profile.university} · Computer Engineering · 2021–2026</Muted></div>
+              <div style={{ fontWeight: 700 }}>{p.name}</div>
+              <div><Muted>{p.role}</Muted></div>
+              <div><Muted>{p.university} · {p.degree} · {p.period}</Muted></div>
             </div>
             <Sep />
           </div>
@@ -178,14 +197,14 @@ guest:x:1001:1001:Guest:/home/guest:/bin/ayberksh`}</pre>
         return (
           <div className="space-y-1">
             <Sep />
-            {experience.map((exp) => (
-              <div key={exp.id} className="pl-2 py-2 space-y-0.5">
+            {exp.map((e) => (
+              <div key={e.id} className="pl-2 py-2 space-y-0.5">
                 <div className="flex justify-between flex-wrap gap-2">
-                  <span style={{ fontWeight: 600 }}>{exp.company}</span>
-                  <Muted>{exp.period}</Muted>
+                  <span style={{ fontWeight: 600 }}>{e.company}</span>
+                  <Muted>{e.period}</Muted>
                 </div>
-                <div><Green>{exp.role}</Green> <Dim>· {exp.location}</Dim></div>
-                {exp.bullets.map((b, i) => (
+                <div><Green>{e.role}</Green> <Dim>· {e.location}</Dim></div>
+                {e.bullets.map((b, i) => (
                   <div key={i}><Dim>  › </Dim><Muted>{b}</Muted></div>
                 ))}
               </div>
@@ -197,7 +216,7 @@ guest:x:1001:1001:Guest:/home/guest:/bin/ayberksh`}</pre>
 
       if (arg.startsWith('projects/') || arg.startsWith('experience/')) {
         const projId = arg.replace('projects/', '').replace('/readme.md', '').replace('.txt', '')
-        const proj = projects.find(p => p.id === projId)
+        const proj = prs.find(p => p.id === projId)
         if (proj) return (
           <div className="space-y-1">
             <Sep />
@@ -227,17 +246,17 @@ guest:x:1001:1001:Guest:/home/guest:/bin/ayberksh`}</pre>
           </div>
         )
         const expId = arg.replace('experience/', '').replace('.txt', '')
-        const exp = experience.find(e => e.id === expId)
-        if (exp) return (
+        const expEntry = exp.find(e => e.id === expId)
+        if (expEntry) return (
           <div className="space-y-1">
             <Sep />
             <div className="pl-2 py-2 space-y-0.5">
               <div className="flex justify-between flex-wrap gap-2">
-                <span style={{ fontWeight: 600 }}>{exp.company}</span>
-                <Muted>{exp.period}</Muted>
+                <span style={{ fontWeight: 600 }}>{expEntry.company}</span>
+                <Muted>{expEntry.period}</Muted>
               </div>
-              <div><Green>{exp.role}</Green> <Dim>· {exp.location}</Dim></div>
-              {exp.bullets.map((b, i) => (
+              <div><Green>{expEntry.role}</Green> <Dim>· {expEntry.location}</Dim></div>
+              {expEntry.bullets.map((b, i) => (
                 <div key={i}><Dim>  › </Dim><Muted>{b}</Muted></div>
               ))}
             </div>
@@ -252,7 +271,7 @@ guest:x:1001:1001:Guest:/home/guest:/bin/ayberksh`}</pre>
           <div className="space-y-1">
             <Sep />
             <div className="pl-2 py-1 space-y-1">
-              {Object.entries(skills).map(([k, v]) => (
+              {Object.entries(sk).map(([k, v]) => (
                 <div key={k} className="flex gap-4 flex-wrap">
                   <span className="w-24 shrink-0 uppercase text-xs"><Dim>{k}</Dim></span>
                   <Muted>{v.join(' · ')}</Muted>
@@ -268,7 +287,7 @@ guest:x:1001:1001:Guest:/home/guest:/bin/ayberksh`}</pre>
           <div className="space-y-1">
             <Sep />
             <div className="pl-2 py-1 space-y-0.5">
-              {certifications.map((c, i) => (
+              {crt.map((c, i) => (
                 <div key={i}><Green>{c.name}</Green> <Muted>— {c.detail}</Muted></div>
               ))}
             </div>
@@ -281,8 +300,8 @@ guest:x:1001:1001:Guest:/home/guest:/bin/ayberksh`}</pre>
           <div className="space-y-1">
             <Sep />
             <div className="pl-2 py-1 space-y-0.5">
-              <div><Dim>email     </Dim><a href={`mailto:${profile.email}`} className="hover:underline"><Green>{profile.email}</Green></a></div>
-              <div><Dim>linkedin  </Dim><a href={`https://${profile.linkedin}`} target="_blank" rel="noreferrer" className="hover:underline"><Green>{profile.linkedin}</Green></a></div>
+              <div><Dim>email     </Dim><a href={`mailto:${p.email}`} className="hover:underline"><Green>{p.email}</Green></a></div>
+              <div><Dim>linkedin  </Dim><a href={`https://${p.linkedin}`} target="_blank" rel="noreferrer" className="hover:underline"><Green>{p.linkedin}</Green></a></div>
               <div><Dim>domain    </Dim>ayberkayd.in</div>
             </div>
             <Sep />
@@ -692,7 +711,7 @@ guest:x:1001:1001:Guest:/home/guest:/bin/ayberksh`}</pre>
       return null
 
     case 'help':
-      return <pre style={{ color: 'var(--text-muted)', whiteSpace: 'pre-wrap' }}>{helpText}</pre>
+      return <pre style={{ color: 'var(--text-muted)', whiteSpace: 'pre-wrap' }}>{tr ? helpTextTr : helpText}</pre>
 
     case '':
       return null
@@ -730,7 +749,8 @@ export default function TerminalSession({ onGlitch, externalCmd, onExternalCmdCo
   const [histIdx, setHistIdx] = useState(-1)
   const [outputs, setOutputs] = useState<OutputLine[]>([])
   const [sequencing, setSequencing] = useState(false)
-  const [seqTyping, setSeqTyping] = useState('')   // command being typed in sequence
+  const [seqTyping, setSeqTyping] = useState('')
+  const [lang, setLang] = useState<'en' | 'tr'>('en')
   const inputRef = useRef<HTMLInputElement>(null)
   const sessionStartRef = useRef(Date.now())
 
@@ -739,7 +759,7 @@ export default function TerminalSession({ onGlitch, externalCmd, onExternalCmdCo
   useEffect(() => {
     if (!externalCmd) return
     const id = `ext-${Date.now()}`
-    const output = runCommand(externalCmd, onGlitch, { history, sessionStart: sessionStartRef.current })
+    const output = runCommand(externalCmd, onGlitch, { history, sessionStart: sessionStartRef.current, lang })
     setOutputs(prev => [
       ...prev,
       {
@@ -780,7 +800,7 @@ export default function TerminalSession({ onGlitch, externalCmd, onExternalCmdCo
           clearInterval(iv)
           setTimeout(() => {
             if (cancelled) return
-            const output = runCommand(cmd, onGlitch, { sessionStart: sessionStartRef.current })
+            const output = runCommand(cmd, onGlitch, { sessionStart: sessionStartRef.current, lang })
             setOutputs(prev => [
               ...prev,
               {
@@ -823,9 +843,34 @@ export default function TerminalSession({ onGlitch, externalCmd, onExternalCmdCo
 
     const id = `${Date.now()}`
 
+    // lang command — must update state in component
+    if (/^lang\s+(tr|en)$/i.test(raw.trim())) {
+      const newLang = raw.trim().split(/\s+/)[1].toLowerCase() as 'en' | 'tr'
+      setLang(newLang)
+      const msg = newLang === 'tr'
+        ? 'Dil değiştirildi → Türkçe'
+        : 'Language switched → English'
+      setOutputs(prev => [...prev, {
+        id,
+        content: (
+          <div>
+            <div className="flex gap-3 mt-4">
+              <span style={{ color: 'var(--prompt)', flexShrink: 0 }}>{HANDLE}</span>
+              <span>{raw}</span>
+            </div>
+            <div className="mt-1" style={{ color: 'var(--success)' }}>{msg}</div>
+          </div>
+        ),
+      }])
+      setHistory(h => [raw, ...h])
+      setHistIdx(-1)
+      setInput('')
+      return
+    }
+
     if (raw.toLowerCase() === 'whoami') {
       // show whoami line + brief header, then auto-run sequence
-      const header = runCommand('whoami', onGlitch, { history, sessionStart: sessionStartRef.current })
+      const header = runCommand('whoami', onGlitch, { history, sessionStart: sessionStartRef.current, lang })
       setOutputs(prev => [
         ...prev,
         {
@@ -848,7 +893,7 @@ export default function TerminalSession({ onGlitch, externalCmd, onExternalCmdCo
       return
     }
 
-    const output = runCommand(raw, onGlitch, { history, sessionStart: sessionStartRef.current })
+    const output = runCommand(raw, onGlitch, { history, sessionStart: sessionStartRef.current, lang })
     setOutputs(prev => [
       ...prev,
       {
@@ -918,6 +963,7 @@ export default function TerminalSession({ onGlitch, externalCmd, onExternalCmdCo
           <div style={{ color: 'var(--text-dim)' }} className="space-y-1">
             <div>type <span style={{ color: 'var(--text-muted)' }}>help</span> for available commands</div>
             <div style={{ color: 'var(--text-dim)', opacity: 0.6 }}>tip: type <span style={{ color: 'var(--text-muted)' }}>whoami</span> to see everything</div>
+            <div style={{ color: 'var(--text-dim)', opacity: 0.45 }}>Türkçe için: <span style={{ color: 'var(--text-muted)' }}>lang tr</span></div>
           </div>
         )}
         {outputs.map(o => <div key={o.id}>{o.content}</div>)}

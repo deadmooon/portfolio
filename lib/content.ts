@@ -77,6 +77,118 @@ export const certifications = [
   { name: 'Siber Vatan CTF', detail: '2nd place in Eskişehir — web vulns, crypto, network analysis' },
 ]
 
+// ─── Turkish content ───────────────────────────────────────────
+
+export const profileTr = {
+  ...profile,
+  role: 'Bilgisayar Mühendisi · Güvenlik Araştırmacısı · Geliştirici',
+  university: 'Eskişehir Teknik Üniversitesi',
+  degree: 'Bilgisayar Mühendisliği',
+}
+
+export const experienceTr = [
+  {
+    id: 'bilisim',
+    company: 'Bilişim Siber Güvenlik ve Yapay Zeka Ltd',
+    role: 'Siber Güvenlik Stajyeri',
+    period: 'Tem 2025 – Ağu 2025',
+    location: 'Uzaktan',
+    bullets: [
+      'Web uygulamalarında güvenlik açığı taraması ve güvenlik testleri gerçekleştirdim',
+      'Anormallikleri ve potansiyel tehditleri tespit etmek için ağ kayıtlarını izledim',
+      'Yapay zeka odaklı siber güvenlik projesi araştırma ve dokümantasyonuna katkı sağladım',
+    ],
+  },
+  {
+    id: 'estu-it',
+    company: 'Eskişehir Teknik Üniversitesi — Bilgi İşlem Daire Başkanlığı',
+    role: 'Ağ ve Siber Güvenlik Asistanı',
+    period: 'Eki 2025 – Haz 2026',
+    location: 'Eskişehir (Hibrit)',
+    bullets: [
+      'Yerel VoIP sistemi kurdum — sunucuları, switchleri ve IP telefonları uçtan uca yapılandırdım',
+      'Ağ altyapısını yönettim: routing, switching, VLAN atamaları',
+      'Analiz araçlarıyla ağ trafiğini izledim ve güvenlik açıklarını raporladım',
+    ],
+  },
+]
+
+export const projectsTr = [
+  {
+    id: 'careershipai',
+    name: 'CareerShipAI',
+    tagline: 'Yapay Zeka Destekli Kariyer Platformu',
+    url: 'careershipai.com',
+    stack: ['Next.js 16', 'TypeScript', 'Anthropic API', 'Supabase', 'Vercel'],
+    bullets: [
+      '6 yapay zeka destekli kariyer aracıyla üretim SaaS tasarlayıp geliştirdim ve yayınladım',
+      'CV optimizasyonu · ATS eşleştirme · Sahte mülakatlar · Kapak mektupları · LinkedIn düzenlemeleri',
+      'Gerçek zamanlı streaming ile Claude Sonnet (premium) ve claude-haiku (ücretsiz) entegre ettim',
+      'Lemon Squeezy abonelikleri + Google AdSense ödüllü reklamlarla freemium model',
+      'next-intl ile tam iki dilli (EN/TR), Supabase PostgreSQL üzerinde auth ve veri',
+    ],
+  },
+  {
+    id: 'bug-bounty',
+    name: 'Bug Bounty Araştırması',
+    tagline: '[GİZLİ]',
+    url: null,
+    stack: ['Burp Suite', 'Nmap', 'Recon', 'HackerOne'],
+    bullets: [
+      "HackerOne'da aktif bug bounty avcısı",
+      'Gerçek üretim sistemlerinde kritik güvenlik açıkları raporladım',
+      'Odak: web güvenlik açıkları, API güvenliği, yanlış yapılandırma',
+    ],
+  },
+]
+
+export const skillsTr = {
+  güvenlik:       skills.security,
+  'web geliştirme': skills.webdev,
+  'yapay zeka':   skills.ai,
+  sistemler:      skills.systems,
+}
+
+export const certificationsTr = [
+  { name: 'BTK – Hacktrick 2024', detail: 'Siber Güvenlik Temelleri' },
+  { name: 'Siber Vatan CTF', detail: 'Eskişehir 2.si — web açıkları, kriptografi, ağ analizi' },
+]
+
+export const helpTextTr = `
+Kullanılabilir Komutlar
+
+  Gezinme
+    ls [yol]           Dizin ve dosyaları listele
+    cat <yol>          Dosya içeriğini oku
+    open <url>         URL'yi yeni sekmede aç
+    clear              Terminali temizle
+    pwd                Çalışma dizinini göster
+    tree               Dizin ağacını göster
+
+  Kabuk
+    echo <metin>       Metin yazdır
+    date               Tarih ve saati göster
+    uptime             Oturum süresini göster
+    history            Komut geçmişini göster
+    ping <host>        Host'a ping at
+    man <komut>        Komut kılavuzunu göster
+
+  Portfolyo
+    whoami             Rehberli CV turu
+    ask <soru>         Arka planım hakkında sor
+    neofetch           Sistem bilgisi + ASCII logo
+
+  Örnekler
+    ls
+    ls projects/
+    cat about.txt
+    cat skills.txt
+    ask projeler hakkında
+    lang en            (İngilizce'ye geç)
+`
+
+// ─── Filesystem ────────────────────────────────────────────────
+
 export const lsOutput    = `about.txt       experience/     projects/       skills.txt      certs.txt       contact.txt     downloads/      logs/        writeups/`
 export const lsOutputAll = `.               ..              .config/\n${`about.txt       experience/     projects/       skills.txt      certs.txt       contact.txt     downloads/      logs/        writeups/`}`
 
