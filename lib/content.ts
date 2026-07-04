@@ -52,6 +52,19 @@ export const projects = [
     ],
   },
   {
+    id: 'vuln-scanner',
+    name: 'AI Vulnerability Scanner',
+    tagline: 'Thesis — Fine-tuned LLM for Security Analysis',
+    url: null,
+    stack: ['WhiteRabbitNeo-13B', 'LoRA / PEFT', '4-bit NF4', 'FastAPI', 'Next.js'],
+    bullets: [
+      'Fine-tuned WhiteRabbitNeo-13B on cybersecurity datasets using LoRA and 4-bit quantization',
+      'Model analyzes source code and returns structured findings: CVE/CWE, CVSS score, vulnerable snippet, and patched code',
+      'Supports Python, JS, TS, PHP, Java, Go, Rust, Swift, C++ and more',
+      'FastAPI backend served from Colab GPU via ngrok; Next.js frontend with severity dashboard',
+    ],
+  },
+  {
     id: 'bug-bounty',
     name: 'Bug Bounty Research',
     tagline: '[CLASSIFIED]',
@@ -126,6 +139,19 @@ export const projectsTr = [
       'Gerçek zamanlı streaming ile Claude Sonnet (premium) ve claude-haiku (ücretsiz) entegre ettim',
       'Lemon Squeezy abonelikleri + Google AdSense ödüllü reklamlarla freemium model',
       'next-intl ile tam iki dilli (EN/TR), Supabase PostgreSQL üzerinde auth ve veri',
+    ],
+  },
+  {
+    id: 'vuln-scanner',
+    name: 'Yapay Zeka Güvenlik Açığı Tarayıcı',
+    tagline: 'Tez — Güvenlik Analizi için Fine-tuned LLM',
+    url: null,
+    stack: ['WhiteRabbitNeo-13B', 'LoRA / PEFT', '4-bit NF4', 'FastAPI', 'Next.js'],
+    bullets: [
+      "WhiteRabbitNeo-13B'yi LoRA ve 4-bit quantization ile siber güvenlik veri setleri üzerinde fine-tune ettim",
+      'Model kaynak kodu analiz edip yapılandırılmış bulgular döndürüyor: CVE/CWE, CVSS skoru, zafiyetli kod ve düzeltilmiş versiyon',
+      'Python, JS, TS, PHP, Java, Go, Rust, Swift, C++ ve daha fazlasını destekliyor',
+      'FastAPI backend Colab GPU üzerinde ngrok ile yayınlanıyor; Next.js frontend ile severity dashboard',
     ],
   },
   {
