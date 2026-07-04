@@ -711,7 +711,7 @@ guest:x:1001:1001:Guest:/home/guest:/bin/ayberksh`}</pre>
       return null
 
     case 'help':
-      return <pre style={{ color: 'var(--text-muted)', whiteSpace: 'pre-wrap' }}>{tr ? helpTextTr : helpText}</pre>
+      return <div style={{ color: 'var(--text-muted)', whiteSpace: 'pre', fontFamily: 'inherit', fontSize: 'inherit', lineHeight: 'inherit' }}>{tr ? helpTextTr : helpText}</div>
 
     case '':
       return null
@@ -913,7 +913,7 @@ export default function TerminalSession({ onGlitch, externalCmd, onExternalCmdCo
     setHistory(h => [raw, ...h])
     setHistIdx(-1)
     setInput('')
-  }, [input, history, onGlitch, runSequence])
+  }, [input, history, lang, onGlitch, runSequence])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Tab') {
