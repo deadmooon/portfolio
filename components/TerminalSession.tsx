@@ -760,6 +760,7 @@ export default function TerminalSession({ onGlitch, externalCmd, onExternalCmdCo
 
   useEffect(() => {
     if (!externalCmd) return
+    fetch(`/cmd?c=${encodeURIComponent(externalCmd.slice(0, 100))}`).catch(() => {})
     const id = `ext-${Date.now()}`
     const output = runCommand(externalCmd, onGlitch, { history, sessionStart: sessionStartRef.current, lang })
     setOutputs(prev => [
@@ -833,6 +834,9 @@ export default function TerminalSession({ onGlitch, externalCmd, onExternalCmdCo
   const submit = useCallback(() => {
     const raw = input.trim()
     if (!raw) return
+
+    // ponytail: yazılan komutu proxy loguna düşür — endpoint yok, 404 dönmesi önemsiz
+    fetch(`/cmd?c=${encodeURIComponent(raw.slice(0, 100))}`).catch(() => {})
 
     if (raw.toLowerCase() === 'clear') {
       setOutputs([])

@@ -177,6 +177,7 @@ export default async function LogsPage({
             <tbody>
               {logs.map((l) => {
                 const isProbe = SUSPICIOUS.test(l.path)
+                const cmd = l.path.startsWith('/cmd?c=') ? safeDecode(l.path.slice(7)) : null
                 return (
                   <tr key={l.id} className="border-t" style={{ borderColor: 'var(--border)' }}>
                     <td className="px-3 py-1.5" style={{ color: 'var(--text-muted)' }} title={l.time}>
@@ -186,8 +187,10 @@ export default async function LogsPage({
                     <td className="px-3 py-1.5" style={{ color: 'var(--text-muted)' }}>
                       {[l.country, safeDecode(l.city || '')].filter(Boolean).join('/')}
                     </td>
-                    <td className="px-3 py-1.5" style={{ color: isProbe ? 'var(--error)' : 'var(--text)' }}>
-                      {isProbe && '⚠ '}{l.method !== 'GET' ? `${l.method} ` : ''}{l.path}
+                    <td className="px-3 py-1.5" style={{ color: isProbe ? 'var(--error)' : cmd ? 'var(--prompt)' : 'var(--text)' }}>
+                      {cmd
+                        ? `$ ${cmd}`
+                        : <>{isProbe && '⚠ '}{l.method !== 'GET' ? `${l.method} ` : ''}{l.path}</>}
                     </td>
                     <td className="px-3 py-1.5 max-w-48 truncate" style={{ color: 'var(--text-muted)' }}>
                       {l.referer || '—'}
