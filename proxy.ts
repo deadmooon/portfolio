@@ -38,7 +38,7 @@ export function proxy(request: NextRequest, event: NextFetchEvent) {
   return NextResponse.next();
 }
 
-export const proxyConfig = {
+export const config = {
   // _next asset'leri ve Vercel Analytics hariç her şeyi logla —
   // /wp-admin, /.env gibi kurcalama denemeleri de düşsün diye geniş tutuldu
   // /logs hariç: kendi dashboard ziyaretlerin tabloyu doldurmasın
