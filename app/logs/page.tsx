@@ -97,6 +97,14 @@ function LoginScreen({ hasError }: { hasError: boolean }) {
   )
 }
 
+function safeDecode(value: string): string {
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return value
+  }
+}
+
 function timeAgo(iso: string): string {
   const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000)
   if (mins < 1) return 'now'
@@ -176,7 +184,7 @@ export default async function LogsPage({
                     </td>
                     <td className="px-3 py-1.5">{l.ip}</td>
                     <td className="px-3 py-1.5" style={{ color: 'var(--text-muted)' }}>
-                      {[l.country, decodeURIComponent(l.city || '')].filter(Boolean).join('/')}
+                      {[l.country, safeDecode(l.city || '')].filter(Boolean).join('/')}
                     </td>
                     <td className="px-3 py-1.5" style={{ color: isProbe ? 'var(--error)' : 'var(--text)' }}>
                       {isProbe && '⚠ '}{l.method !== 'GET' ? `${l.method} ` : ''}{l.path}
